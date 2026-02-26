@@ -86,7 +86,7 @@ const updateNote = async (req, res) => {
         const updatedNote = await userNote.findByIdAndUpdate(
             id,
             { title, description },
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         );
         
         if (!updatedNote) {
@@ -106,6 +106,37 @@ const updateNote = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Internal server error'
+        });
+    }
+};
+const editNote = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, description } = req.body;
+
+        const updatedNote = await userNote.findByIdAndUpdate(
+            id,
+            { title, description },
+            { returnDocument: 'after', runValidators: true }
+        );
+
+        if (!updatedNote) {
+            return res.status(404).json({
+                success: false,
+                message: 'Note not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Note updated successfully',
+            data: updatedNote
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
         });
     }
 };
@@ -141,5 +172,6 @@ module.exports = {
     getAllNotes,
     getNoteById,
     updateNote,
-    deleteNote
+    deleteNote,
+    editNote
 };

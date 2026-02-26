@@ -3,10 +3,23 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import AddNote from './AddNote'
 import ViewNotes from './ViewNotes'
+import EditNote from './EditNote'
 
 
 function App() {
   const [count, setCount] = useState(0)
+  const [editingNote, setEditingNote] = useState(null);
+
+  const handleOpenEditModal = (note) => {
+    setEditingNote(note);
+  };
+
+  const handleCloseEditModal = () => {
+    setEditingNote(null);
+  };
+
+  // Make the openEditModal function available globally so ViewNotes can call it
+  window.openEditModal = handleOpenEditModal;
 
   return (
     <div>
@@ -16,6 +29,13 @@ function App() {
         <div className="mt-12">
           <ViewNotes />
         </div>
+        {editingNote && (
+          <EditNote 
+            note={editingNote} 
+            onSave={handleCloseEditModal} 
+            onCancel={handleCloseEditModal} 
+          />
+        )}
       </div>
     </div>
   )

@@ -33,7 +33,7 @@ export default function ViewNotes() {
         const response = await deleteNote(id);
         if (response.success) {
           alert("Note deleted successfully!");
-          // Refresh the notes list
+      
           fetchNotes();
         } else {
           alert(response.message || "Failed to delete note");
@@ -96,6 +96,15 @@ export default function ViewNotes() {
                     )}
                   </div>
                 </div>
+                <button
+                  onClick={() => {
+                    // Call a function to open the edit modal/form with this note's data
+                    window.openEditModal && window.openEditModal(note);
+                  }}
+                  className="ml-4 px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors"
+                >
+                  Edit
+                </button>
                 <button
                   onClick={() => handleDelete(note._id)}
                   className="ml-4 px-3 py-1 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md transition-colors"
