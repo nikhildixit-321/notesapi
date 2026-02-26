@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createNote } from "./api/notes";
 
 export default function AddNote() {
   const [title, setTitle] = useState("");
@@ -28,16 +29,32 @@ export default function AddNote() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
-      console.log({ title, description });
-      alert("Note submitted successfully!");
-      // Reset form
-      setTitle("");
-      setDescription("");
-      setErrors({});
+      setIsLoading(true);
+      try {
+        const noteData = { title, description };
+        const response = await createNote(noteData);
+        
+        if (response.success) {
+          alert("Note submitted successfully!");
+          // Reset form
+          setTitle("");
+          setDescription("");
+          setErrors({});
+        } else {
+          alert(response.message || "Failed to submit note");
+        }
+      } catch (error) {
+        console.error("Error submitting note:", error);
+        alert(error.response?.data?.message || "An error occurred while submitting the note");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -97,9 +114,10 @@ export default function AddNote() {
           </button>
           <button
             type="submit"
-            className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            disabled={isLoading}
+            className={`px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            Submit
+            {isLoading ? 'Submitting...' : 'Submit'}
           </button>
         </div>
       </form>

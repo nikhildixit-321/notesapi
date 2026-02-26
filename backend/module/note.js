@@ -1,22 +1,21 @@
-const uuid = require('uuid')
-const mongoose = require('mongoose')
-const { stringify } = require('uuid')
+const mongoose = require('mongoose');
 
-
-const noteSchema = mongoose.Schema({
-    title:{
-        type:String,
-        require:true
+const noteSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: true,
+        trim: true,
+        maxlength: 32
     },
-    discription:{
-        type:String,
-        require:true,
-        unique:true
-    },
-  
+    description: {
+        type: String,
+        required: true,
+        trim: true,
+        maxlength: 100
+    }
+}, {
+    timestamps: true
+});
 
-},{
-    Timestamp:true
-})
-const Note = mongoose.model('Note',noteSchema)
-module.exports= Note
+const Note = mongoose.model('Note', noteSchema);
+module.exports = Note;
